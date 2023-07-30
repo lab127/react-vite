@@ -11,3 +11,9 @@ React, TypeScript
 ```bash
 npm install
 ```
+
+Install Bootstrap
+
+```bash
+npm install bootstrap@5.2.3
+```
