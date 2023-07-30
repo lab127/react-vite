@@ -1,6 +1,7 @@
 function Message() {
   // JSX:JavaScript XML
-  return <h1>Hello World</h1>;
+  const name = "Lab127";
+  return <h1>Hello {name}</h1>;
 }
 
 export default Message;
