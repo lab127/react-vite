@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// props immutable, seperti funsi variable
 interface ListGroupProps {
   items: string[];
   heading: string;
@@ -9,6 +10,7 @@ interface ListGroupProps {
 
 // Params props
 function ListGroup({ items, heading, onSelectItem }: ListGroupProps) {
+  // useState mutable, seperti local variable
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   return (
