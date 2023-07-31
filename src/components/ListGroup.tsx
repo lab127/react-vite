@@ -1,20 +1,25 @@
+import { MouseEvent } from "react";
+
 function ListGroup() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
-  items = [];
+
+  // Event Handler
+  // event: MouseEvent -> type anotation typescript
+  const handleClick = (event: MouseEvent) => console.log(event);
 
   return (
     <>
       <h1>List</h1>
-      {/* 
-      console log:
-      true &&  1 return 1
-      true && 'string' return 'string'
-      false && 'string' return false
-      */}
       {items.length === 0 && <p>No item Found</p>}
       <ul className="list-group">
-        {items.map((item) => (
-          <li className="list-group-item" key={item}>
+        {items.map((item, index) => (
+          <li
+            className="list-group-item"
+            key={item}
+            onClick={handleClick}
+            // onClick={(event) => console.log(event)}
+            // hover event buat lihat type event: React.MouseEvent
+          >
             {item}
           </li>
         ))}
