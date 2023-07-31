@@ -1,10 +1,18 @@
 function ListGroup() {
-  const items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
+  let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
+  items = [];
+
   return (
     <>
-      <h1>List</h1> {/* React.createElement('h1') */}
+      <h1>List</h1>
+      {/* 
+      console log:
+      true &&  1 return 1
+      true && 'string' return 'string'
+      false && 'string' return false
+      */}
+      {items.length === 0 && <p>No item Found</p>}
       <ul className="list-group">
-        {/* gunakan map karena nggak bisa pakai for */}
         {items.map((item) => (
           <li className="list-group-item" key={item}>
             {item}
