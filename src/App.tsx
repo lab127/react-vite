@@ -1,4 +1,5 @@
 import Alert from "./components/Alert";
+import Button from "./components/Button";
 
 function App() {
   return (
@@ -6,6 +7,9 @@ function App() {
       <Alert>
         Hello <strong>World</strong>
       </Alert>
+      <Button color="success" onClick={() => console.log("Klik")}>
+        Primary
+      </Button>
     </div>
   );
 }
