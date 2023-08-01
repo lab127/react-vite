@@ -7,12 +7,21 @@ interface AlertProps {
   // ReactNode digunakan agar content dalam componen bisa html
   // contoh ReactNode: <Alert>Hello <strong>World</strong></Alert>
   children: ReactNode;
+  // buat close button
+  onClose: () => void;
 }
 
-const Alert = ({ children }: AlertProps) => {
+const Alert = ({ children, onClose }: AlertProps) => {
   return (
-    <div className="alert alert-primary" role="alert">
+    <div className="alert alert-primary alert-dismissible" role="alert">
       {children}
+      <button
+        type="button"
+        className="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+        onClick={onClose}
+      ></button>
     </div>
   );
 };
