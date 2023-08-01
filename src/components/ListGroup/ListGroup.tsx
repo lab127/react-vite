@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./ListGroup.css";
+import styles from "./ListGroup.module.css";
 
 // props immutable, seperti funsi variable
 interface ListGroupProps {
@@ -18,7 +18,11 @@ function ListGroup({ items, heading, onSelectItem }: ListGroupProps) {
     <>
       <h1>{heading}</h1>
       {items.length === 0 && <p>No item Found</p>}
-      <ul className="list-group">
+      {/* penulisan styles["list-group"] digunakan jika nama class ada hypen (-).
+      Jika tidak, bisa ditulisa dengan styles.ListGroup.
+      "styles" bisa diganti dengan nama lain selama pemanggilan di className sama.
+      Penulisan banyak class dalam html tag menggunakan array, kemudian join dengan spasi sebagai pemisah, className={[styles.listGroup, styles.container].join(" ")}*/}
+      <ul className={[styles.listGroup, styles.container].join(" ")}>
         {items.map((item, index) => (
           <li
             className={
