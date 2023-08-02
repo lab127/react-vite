@@ -23,3 +23,9 @@ Library Components
 ```bash
 npm install styled-components
 ```
+
+React Icon
+
+```bash
+npm install react-icons@4.7.1
+```
