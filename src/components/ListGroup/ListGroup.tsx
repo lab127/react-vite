@@ -1,5 +1,19 @@
 import { useState } from "react";
-import styles from "./ListGroup.module.css";
+import styled from "styled-components";
+
+const List = styled.ul`
+  list-style: none;
+  padding: 0;
+`;
+
+interface ListItemProps {
+  active: boolean;
+}
+
+const ListItem = styled.li<ListItemProps>`
+  padding: 5px 0;
+  background: ${(props) => (props.active ? "blue" : "none")};
+`;
 
 // props immutable, seperti funsi variable
 interface ListGroupProps {
@@ -18,18 +32,10 @@ function ListGroup({ items, heading, onSelectItem }: ListGroupProps) {
     <>
       <h1>{heading}</h1>
       {items.length === 0 && <p>No item Found</p>}
-      {/* penulisan styles["list-group"] digunakan jika nama class ada hypen (-).
-      Jika tidak, bisa ditulisa dengan styles.ListGroup.
-      "styles" bisa diganti dengan nama lain selama pemanggilan di className sama.
-      Penulisan banyak class dalam html tag menggunakan array, kemudian join dengan spasi sebagai pemisah, className={[styles.listGroup, styles.container].join(" ")}*/}
-      <ul className={[styles.listGroup, styles.container].join(" ")}>
+      <List>
         {items.map((item, index) => (
-          <li
-            className={
-              selectedIndex === index
-                ? "list-group-item active"
-                : "list-group-item"
-            }
+          <ListItem
+            active={index === selectedIndex}
             key={item}
             onClick={() => {
               setSelectedIndex(index);
@@ -38,9 +44,9 @@ function ListGroup({ items, heading, onSelectItem }: ListGroupProps) {
             }}
           >
             {item}
-          </li>
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </>
   );
 }

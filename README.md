@@ -17,3 +17,9 @@ Install Bootstrap
 ```bash
 npm install bootstrap@5.2.3
 ```
+
+Library Components
+
+```bash
+npm install styled-components
+```
