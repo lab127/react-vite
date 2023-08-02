@@ -1,15 +1,21 @@
+import styles from "./Button.module.css";
+
 interface ButtonProps {
   children: string;
   //   color? artinya color optional
   //   union option, biar isi color tidak ngasal
-  color?: "primary" | "secondary" | "success" | "danger";
+  color?: "primary" | "secondary";
   onClick: () => void;
 }
 
 // tambah default value props
 const Button = ({ children, color = "primary", onClick }: ButtonProps) => {
   return (
-    <button type="button" className={"btn btn-" + color} onClick={onClick}>
+    <button
+      type="button"
+      className={[styles.btn, styles["btn-" + color]].join(" ")}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

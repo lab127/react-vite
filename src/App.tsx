@@ -35,8 +35,8 @@ function App() {
       {alertVisible && (
         <Alert onClose={() => setAlertVisibility(false)}>My Alert</Alert>
       )}
-      <Button color="success" onClick={visibilityToggle}>
-        Primary
+      <Button color="secondary" onClick={visibilityToggle}>
+        My Button
       </Button>
     </>
   );
