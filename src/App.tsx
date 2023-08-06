@@ -60,6 +60,20 @@ function App() {
     });
   };
 
+  // modifikasi array menggunakan useState
+  const [tags, setTags] = useState(["happy", "cheerful"]);
+
+  const handleTagsClick = () => {
+    // add array
+    setTags([...tags, "exciting"]);
+
+    // remove array
+    setTags(tags.filter((tag) => tag !== "happy"));
+
+    // update array
+    setTags(tags.map((tag) => (tag === "happy" ? "happiness" : tag)));
+  };
+
   return (
     <>
       <p>{drink.price}</p>
