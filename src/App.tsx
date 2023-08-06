@@ -5,6 +5,7 @@ import ListGroup from "./components/ListGroup";
 import "./App.css";
 import { BsFillCalendarFill } from "react-icons/bs";
 import Like from "./components/Like";
+import Message from "./Message";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -45,6 +46,7 @@ function App() {
 
   return (
     <>
+      <Message />
       <Like onLike={() => console.log("klik")} />
       <BsFillCalendarFill color="red" size="30" />
       <div>
