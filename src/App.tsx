@@ -44,6 +44,22 @@ function App() {
     setDrink({ ...drink, price: 6 });
   };
 
+  const [customer, setCustomer] = useState({
+    name: "John",
+    address: {
+      city: "San Francisco",
+      zipCode: 94111,
+    },
+  });
+
+  // cara ganti zipCode dalam nested ...customer cuma 1 nest
+  const handleCustomerClick = () => {
+    setCustomer({
+      ...customer,
+      address: { ...customer.address, zipCode: 94112 },
+    });
+  };
+
   return (
     <>
       <p>{drink.price}</p>
