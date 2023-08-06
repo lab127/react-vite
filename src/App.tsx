@@ -24,28 +24,30 @@ function App() {
     setAlertVisibility((current) => !current);
   };
 
-  // const [firstName, setFirstName] = useState('');
-  // const [lastName, setLastName] = useState('');
-  // hindari redundand state variable
-  // gunakan 2 variable firstName, lastName sebagai object
-  // saat menggunakan object, hindari menggunakan nested structure terlalu dalam
-  // karena akan kesulitan saat update state
-  // contoh pada object contact
-
-  const [person, setPerson] = useState({
-    firstName: "",
-    lastName: "",
-    // contact: {
-    //   address: {
-    //     street: "",
-    //     state: "",
-    //   },
-    //   phone: "",
-    // },
+  // object/array dianggap sebagai immutable
+  const [drink, setDrink] = useState({
+    title: "Americano",
+    price: 5,
   });
+
+  // cara update object dengan membuat object baru
+  // tidak bisa langsung dibuat dengan:
+  // drink.price = 6;
+  // setDrink(drink);
+  // jika banyak properties, gunakan '...drink',
+  const handleDrinkClick = () => {
+    // const newDrink = {
+    //   title: drink.title,
+    //   price: 6,
+    // };
+    // setDrink(newDrink);
+    setDrink({ ...drink, price: 6 });
+  };
 
   return (
     <>
+      <p>{drink.price}</p>
+      <button onClick={handleDrinkClick}>Click Me</button>
       <Message />
       <Like onLike={() => console.log("klik")} />
       <BsFillCalendarFill color="red" size="30" />
