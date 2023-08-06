@@ -23,6 +23,26 @@ function App() {
     setAlertVisibility((current) => !current);
   };
 
+  // const [firstName, setFirstName] = useState('');
+  // const [lastName, setLastName] = useState('');
+  // hindari redundand state variable
+  // gunakan 2 variable firstName, lastName sebagai object
+  // saat menggunakan object, hindari menggunakan nested structure terlalu dalam
+  // karena akan kesulitan saat update state
+  // contoh pada object contact
+
+  const [person, setPerson] = useState({
+    firstName: "",
+    lastName: "",
+    // contact: {
+    //   address: {
+    //     street: "",
+    //     state: "",
+    //   },
+    //   phone: "",
+    // },
+  });
+
   return (
     <>
       <Like onLike={() => console.log("klik")} />
