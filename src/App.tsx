@@ -7,6 +7,8 @@ import { BsFillCalendarFill } from "react-icons/bs";
 import Like from "./components/Like";
 import Message from "./Message";
 import produce from "immer";
+import NavBar from "./components/NavBar";
+import Cart from "./components/Cart";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -94,8 +96,15 @@ function App() {
     );
   };
 
+  // share this state between cart and navbar component
+  const [cartItems, setCartItems] = useState(["Product 1", "Product 2"]);
+
   return (
     <>
+      <div>
+        <NavBar cartItemsCount={cartItems.length} />
+        <Cart cartItems={cartItems} onClear={() => setCartItems([])} />
+      </div>
       <div>
         {bugs.map((bug) => (
           <p key={bug.id}>
