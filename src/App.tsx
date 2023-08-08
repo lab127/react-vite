@@ -74,6 +74,15 @@ function App() {
     setTags(tags.map((tag) => (tag === "happy" ? "happiness" : tag)));
   };
 
+  const [bugs, setBugs] = useState([
+    { id: 1, title: "Bug 1", fixed: false },
+    { id: 2, title: "Bug 2", fixed: false },
+  ]);
+
+  const handleBugClick = () => {
+    setBugs(bugs.map((bug) => (bug.id === 1 ? { ...bug, fixed: true } : bug)));
+  };
+
   return (
     <>
       <p>{drink.price}</p>
