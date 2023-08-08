@@ -29,3 +29,9 @@ React Icon
 ```bash
 npm install react-icons@4.7.1
 ```
+
+Immer
+
+```bash
+npm install immer@9.0.19
+```

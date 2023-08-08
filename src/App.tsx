@@ -6,6 +6,7 @@ import "./App.css";
 import { BsFillCalendarFill } from "react-icons/bs";
 import Like from "./components/Like";
 import Message from "./Message";
+import produce from "immer";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -80,11 +81,29 @@ function App() {
   ]);
 
   const handleBugClick = () => {
-    setBugs(bugs.map((bug) => (bug.id === 1 ? { ...bug, fixed: true } : bug)));
+    // setBugs(bugs.map((bug) => (bug.id === 1 ? { ...bug, fixed: true } : bug)));
+
+    // dalam penggunaan immer, draft adalah proxy object bug array
+    // seperti copy dari draft yang mutable bisa diubah
+    setBugs(
+      produce((draft) => {
+        // jika bug.id === 1
+        const bug = draft.find((bug) => bug.id === 1);
+        if (bug) bug.fixed = true;
+      })
+    );
   };
 
   return (
     <>
+      <div>
+        {bugs.map((bug) => (
+          <p key={bug.id}>
+            {bug.title} {bug.fixed ? "Fixed" : "New"}
+          </p>
+        ))}
+        <button onClick={handleBugClick}>Click Bug</button>
+      </div>
       <p>{drink.price}</p>
       <button onClick={handleDrinkClick}>Click Me</button>
       <Message />
