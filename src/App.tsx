@@ -9,6 +9,7 @@ import Message from "./Message";
 import produce from "immer";
 import NavBar from "./components/NavBar";
 import Cart from "./components/Cart";
+import ExpandableText from "./components/ExpandableText";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -25,6 +26,7 @@ function App() {
     // current adalah arg fungsi setAlertVisibility
     // jadi bisa apa aja
     setAlertVisibility((current) => !current);
+    // setAlertVisibility(!alertVisible);
   };
 
   // object/array dianggap sebagai immutable
@@ -147,6 +149,27 @@ function App() {
 
   return (
     <>
+      <div className="exersice-13-1 build-expandable-text">
+        <ExpandableText maxChar={40}>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus
+          facilis quas, sequi ipsa similique at cumque natus veritatis maiores
+          mollitia culpa eius, temporibus assumenda nemo saepe corrupti dolorum
+          soluta beatae voluptatem vitae voluptate tempore quia! Necessitatibus
+          voluptatum tempore inventore distinctio nisi, mollitia ex neque
+          consectetur odio modi magni blanditiis eos, laudantium, voluptatibus
+          quae illo laboriosam in adipisci fuga accusantium cupiditate ipsam
+          porro! Nesciunt, laudantium mollitia expedita dolores perferendis aut
+          molestias pariatur, quia at repudiandae, optio nemo dolorum. Quas quam
+          a quod atque at ad soluta, laboriosam dolorem accusantium velit!
+          Molestiae, consequatur unde dignissimos libero aliquid obcaecati aut
+          minima delectus esse accusantium? Velit illum autem veritatis quas
+          fuga natus, laborum minus! Aliquam velit quasi voluptate nisi iusto
+          sed esse iure quia cum. Odio tempora, inventore ipsam officiis
+          consequuntur aspernatur dolorum laborum, praesentium recusandae minus
+          numquam voluptatem et similique labore iure, ipsum natus excepturi
+          non. Odit rerum odio harum esse, praesentium mollitia?
+        </ExpandableText>
+      </div>
       <div className="exersice-3 updating state">
         <ul>
           {productCart.items.map((item) => (
