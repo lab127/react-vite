@@ -99,8 +99,79 @@ function App() {
   // share this state between cart and navbar component
   const [cartItems, setCartItems] = useState(["Product 1", "Product 2"]);
 
+  // exersice 1 -- updating state
+  const [game, setGame] = useState({
+    id: 1,
+    player: {
+      name: "John",
+    },
+  });
+
+  const handleGameClick = () => {
+    setGame({ ...game, player: { ...game.player, name: "Bob" } });
+  };
+
+  // exersice 2 -- updating state
+  const [pizza, setPizza] = useState({
+    name: "Spicy Pepperoni",
+    toppings: ["Mushroom"],
+  });
+
+  const handlePizzaClick = () => {
+    setPizza({ ...pizza, toppings: [...pizza.toppings, "Cheese"] });
+  };
+
+  // exersice 3 -- updating state
+  const [productCart, setProductCart] = useState({
+    discount: 0.1,
+    items: [
+      { id: 1, title: "Product 1", quantity: 1 },
+      { id: 2, title: "Product 2", quantity: 1 },
+    ],
+  });
+
+  const handleProductCart = () => {
+    setProductCart({
+      ...productCart,
+      items: productCart.items.map((item) =>
+        item.id === 1 ? { ...item, quantity: item.quantity + 1 } : item
+      ),
+      // kode dibawah ini hanya berfungsi 1x klik, item.quantity maksimal 2 karena items: tidak ditulis
+      // ...productCart.items.map((item) =>
+      //   item.id === 1 && item.quantity === 1
+      //     ? (item.quantity = item.quantity + 1)
+      //     : item
+      // ),
+    });
+  };
+
   return (
     <>
+      <div className="exersice-3 updating state">
+        <ul>
+          {productCart.items.map((item) => (
+            <li>
+              ID:{item.id} - {item.title}, {item.quantity}
+            </li>
+          ))}
+        </ul>
+        <button onClick={handleProductCart}>Add Qty</button>
+      </div>
+      <div className="exersice-2 updating state">
+        <p></p>
+        <ul>
+          {/* nulis awalnya gini pas di save ada ()
+          topping => <li key={topping}>{topping} */}
+          {pizza.toppings.map((topping) => (
+            <li key={topping}>{topping}</li>
+          ))}
+        </ul>
+        <button onClick={handlePizzaClick}>Add Toppings</button>
+      </div>
+      <div className="exersice-1 updating state">
+        <p>{game.player.name}</p>
+        <button onClick={handleGameClick}>Click Player</button>
+      </div>
       <div>
         <NavBar cartItemsCount={cartItems.length} />
         <Cart cartItems={cartItems} onClear={() => setCartItems([])} />
