@@ -10,6 +10,8 @@ import produce from "immer";
 import NavBar from "./components/NavBar";
 import Cart from "./components/Cart";
 import ExpandableText from "./components/ExpandableText";
+import Form from "./components/Form";
+import "./index.css";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -149,6 +151,9 @@ function App() {
 
   return (
     <>
+      <div className="p-1-6-2-building-form">
+        <Form />
+      </div>
       <div className="exersice-13-1 build-expandable-text">
         <ExpandableText maxChar={40}>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus
@@ -173,7 +178,8 @@ function App() {
       <div className="exersice-3 updating state">
         <ul>
           {productCart.items.map((item) => (
-            <li>
+            // harus ada key props
+            <li key={item.id}>
               ID:{item.id} - {item.title}, {item.quantity}
             </li>
           ))}
