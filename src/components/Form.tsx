@@ -64,10 +64,11 @@ const Form = () => {
   // age? name? root?
   // useForm<ZFormData>({ resolver: zodResolver(schema) });
   // penulisan menggunakan zod
+  // disable submit button jika form invalid formState: { errors, isValid }
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<ZFormData>({ resolver: zodResolver(schema) });
 
   // hover `data` untuk mengetahui type FieldValues
@@ -132,7 +133,7 @@ const Form = () => {
         {errors.age && <p className="text-danger">{errors.age.message}</p>}
       </div>
       {/* button.btn.btn-primary cara menulis 2 className dalam 1 tag */}
-      <button className="btn btn-primary" type="submit">
+      <button disabled={!isValid} className="btn btn-primary" type="submit">
         Submit
       </button>
     </form>
