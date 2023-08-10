@@ -21,6 +21,7 @@ const Form = () => {
     console.log(person);
   };
 
+  // cara lain kontrol komponen selain ref, yaitu menggunakan useState
   const [people, setPeople] = useState({
     name: "",
     age: "",
