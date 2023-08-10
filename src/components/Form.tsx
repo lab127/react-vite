@@ -1,6 +1,12 @@
 import { FormEvent, useRef, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 
+// pass data useForm()
+interface FormData {
+  name: string;
+  age: number;
+}
+
 const Form = () => {
   // typescript compiler tidak tau yang diferensikan apa aja
   // karena menggunaka useRef hook bisa mereferensikan apa aja di DOM, tidak pasti input field
@@ -33,10 +39,21 @@ const Form = () => {
     console.log(people);
   };
 
-  // namanya harus sesuai, register, handleSubmit
-  // tidak bisa diganti-ganti
-  const { register, handleSubmit } = useForm();
-  // hover data untuk mengetahui type FieldValues
+  // destruktur useForm() register, handleSubmit, formState
+  // nama sudah tidak bisa diganti-ganti
+  // cara destruktur fromState properti
+  // bernama nested destructuring
+  // useForm<FormData>() pass interface
+  // setelah membuat interface FormData
+  // saat mengitik `errors.` akan terlihat interface
+  // age? name? root?
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  // hover `data` untuk mengetahui type FieldValues
   const onFormSubmit = (data: FieldValues) => console.log(data);
 
   return (
@@ -53,7 +70,7 @@ const Form = () => {
           Name
         </label>
         <input
-          {...register("name")}
+          {...register("name", { required: true, minLength: 3 })}
           // value={people.name}
           // onChange={(event) =>
           //   setPeople({ ...people, name: event.target.value })
@@ -63,6 +80,16 @@ const Form = () => {
           type="text"
           className="form-control"
         />
+        {/* `errors.name?.` adalah optional changing
+        artinya akan berjalan jika error mempunyai properti name. jika tidak, maka diabaikan.
+        Di bawah ini contoh 1 baris kondisional logic menggunakan && 
+        Saat mengetik `errors.` tidak terlihat nama input field, hanya `root?`. ini dikarenakan typescript compiler tidak mengenali input field kita. maka, untuk type safety, kita buat interface untuk definikan property input field*/}
+        {errors.name?.type === "required" && (
+          <p className="text-danger">The name field is required</p>
+        )}
+        {errors.name?.type === "minLength" && (
+          <p className="text-danger">The name must be at least 3 characters</p>
+        )}
       </div>
       {/* div.mb-3>label.form-label+input[type=number].form-control */}
       <div className="mb-3">
