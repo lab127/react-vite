@@ -41,3 +41,15 @@ React Hook Form
 ```bash
 npm install react-hook-form@7.43
 ```
+
+Zod
+
+```bash
+npm install zod@3.20.6
+```
+
+Integrate react hook form + zod
+
+```bash
+npm install @hookform/resolvers@2.9.11
+```

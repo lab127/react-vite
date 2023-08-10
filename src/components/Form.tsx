@@ -1,5 +1,20 @@
 import { FormEvent, useRef, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// z bisa untu mendefinisikan bentuk atau skema validasi
+// penerapan message dan invalid_type_error
+const schema = z.object({
+  name: z.string().min(3, { message: "Name must be at least 3 characters." }),
+  age: z
+    .number({ invalid_type_error: "Age field is required." })
+    .min(18, { message: "Age must be at least 18." }),
+});
+
+// cara ekstrak skema object
+// fungsi sama seperti `interface FormData`
+type ZFormData = z.infer<typeof schema>;
 
 // pass data useForm()
 interface FormData {
@@ -47,11 +62,13 @@ const Form = () => {
   // setelah membuat interface FormData
   // saat mengitik `errors.` akan terlihat interface
   // age? name? root?
+  // useForm<ZFormData>({ resolver: zodResolver(schema) });
+  // penulisan menggunakan zod
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<ZFormData>({ resolver: zodResolver(schema) });
 
   // hover `data` untuk mengetahui type FieldValues
   const onFormSubmit = (data: FieldValues) => console.log(data);
@@ -70,7 +87,9 @@ const Form = () => {
           Name
         </label>
         <input
-          {...register("name", { required: true, minLength: 3 })}
+          // validasi rule sudah ada di schema
+          {...register("name")}
+          // {...register("name", { required: true, minLength: 3 })}
           // value={people.name}
           // onChange={(event) =>
           //   setPeople({ ...people, name: event.target.value })
@@ -84,12 +103,12 @@ const Form = () => {
         artinya akan berjalan jika error mempunyai properti name. jika tidak, maka diabaikan.
         Di bawah ini contoh 1 baris kondisional logic menggunakan && 
         Saat mengetik `errors.` tidak terlihat nama input field, hanya `root?`. ini dikarenakan typescript compiler tidak mengenali input field kita. maka, untuk type safety, kita buat interface untuk definikan property input field*/}
-        {errors.name?.type === "required" && (
-          <p className="text-danger">The name field is required</p>
-        )}
+        {errors.name && <p className="text-danger">{errors.name.message}</p>}
+        {/* tidak digunakan karena sudah menggukana schema.
+        sebagai ganti menggunakan 1 paragraf kondisional seperti di atas dengan mengganti boolean expression
         {errors.name?.type === "minLength" && (
           <p className="text-danger">The name must be at least 3 characters</p>
-        )}
+        )} */}
       </div>
       {/* div.mb-3>label.form-label+input[type=number].form-control */}
       <div className="mb-3">
@@ -97,8 +116,9 @@ const Form = () => {
           Age
         </label>
         <input
-          {...register("age")}
-          // age tidak perlu arse int, karena initail value people.age = ""
+          // { valueAsNumber: true } agar value selalu number
+          {...register("age", { valueAsNumber: true })}
+          // age tidak perlu parse int, karena initail value people.age = ""
           // value={people.age}
           // onChange={(event) =>
           //   setPeople({ ...people, age: event.target.value })
@@ -108,6 +128,8 @@ const Form = () => {
           type="number"
           className="form-control"
         />
+        {/* di bawah ini menggunakan zod */}
+        {errors.age && <p className="text-danger">{errors.age.message}</p>}
       </div>
       {/* button.btn.btn-primary cara menulis 2 className dalam 1 tag */}
       <button className="btn btn-primary" type="submit">
