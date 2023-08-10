@@ -35,3 +35,9 @@ Immer
 ```bash
 npm install immer@9.0.19
 ```
+
+React Hook Form
+
+```bash
+npm install react-hook-form@7.43
+```
