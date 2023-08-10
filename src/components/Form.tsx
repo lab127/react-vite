@@ -1,4 +1,4 @@
-import { FormEvent, useRef } from "react";
+import { FormEvent, useRef, useState } from "react";
 
 const Form = () => {
   // typescript compiler tidak tau yang diferensikan apa aja
@@ -20,21 +20,55 @@ const Form = () => {
     if (ageRef.current !== null) person.age = parseInt(ageRef.current.value);
     console.log(person);
   };
+
+  const [people, setPeople] = useState({
+    name: "",
+    age: "",
+  });
+
+  const handlePeopleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    console.log(people);
+  };
+
   return (
-    <form className="p1-6-3 handling-form-submission" onSubmit={handleSubmit}>
+    <form
+      // onSubmit={handleSubmit}
+      onSubmit={handlePeopleSubmit}
+      className="p1-6-3 handling-form-submission"
+    >
       {/* div.mb-3>label.form-label+input.form-control kemudian tab*/}
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Name
         </label>
-        <input ref={nameRef} id="name" type="text" className="form-control" />
+        <input
+          value={people.name}
+          onChange={(event) =>
+            setPeople({ ...people, name: event.target.value })
+          }
+          // ref={nameRef}
+          id="name"
+          type="text"
+          className="form-control"
+        />
       </div>
       {/* div.mb-3>label.form-label+input[type=number].form-control */}
       <div className="mb-3">
         <label htmlFor="age" className="form-label">
           Age
         </label>
-        <input ref={ageRef} id="age" type="number" className="form-control" />
+        <input
+          value={people.age}
+          // age tidak perlu arse int, karena initail value people.age = ""
+          onChange={(event) =>
+            setPeople({ ...people, age: event.target.value })
+          }
+          // ref={ageRef}
+          id="age"
+          type="number"
+          className="form-control"
+        />
       </div>
       {/* button.btn.btn-primary cara menulis 2 className dalam 1 tag */}
       <button className="btn btn-primary" type="submit">
