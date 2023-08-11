@@ -12,6 +12,9 @@ import Cart from "./components/Cart";
 import ExpandableText from "./components/ExpandableText";
 import Form from "./components/Form";
 import "./index.css";
+import ExpenseForm from "./expense-tracker/components/ExpenseForm";
+import ExpenseList from "./expense-tracker/components/ExpenseList";
+import ExpenseCategories from "./expense-tracker/components/ExpenseCategories";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -149,8 +152,39 @@ function App() {
     });
   };
 
+  // p1.6.10 - Project- Expense Tracker - START
+  const expenseArr = [
+    { id: 1, description: "aa", amount: 10, category: "Utilities" },
+    { id: 2, description: "bbbb", amount: 10, category: "Utilities" },
+    { id: 3, description: "cccc", amount: 10, category: "Utilities" },
+    { id: 4, description: "adddda", amount: 10, category: "Entertainment" },
+  ];
+
+  const [expenseItem, setExpenseItem] = useState(expenseArr);
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const expenseVisibility = selectedCategory
+    ? expenseItem.filter((e) => e.category === selectedCategory)
+    : expenseItem;
+
+  const delExpenseItem = (itemId: number) => {
+    setExpenseItem(expenseItem.filter((item) => item.id !== itemId));
+  };
+  // p1.6.10 - END
+
   return (
     <>
+      {/* p1.6.10 - Project- Expense Tracker - START */}
+      <div>
+        <ExpenseForm />
+        <ExpenseCategories
+          onSelectCategory={(category) => setSelectedCategory(category)}
+        />
+        <ExpenseList expenses={expenseVisibility} onDelete={delExpenseItem} />
+      </div>
+      {/* p1.6.10 - END */}
+      <hr />
       <div className="p-1-6-2-building-form">
         <Form />
       </div>
