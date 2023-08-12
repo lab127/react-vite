@@ -24,7 +24,9 @@ const ExpenseList = ({ expenses, onDelete }: ExpenseListProps) => {
       <tbody>
         {expenses.map((expense) => (
           <tr key={expense.id}>
-            <td>{expense.description}</td>
+            <td>
+              {expense.id} - {expense.description}
+            </td>
             <td>{expense.amount}</td>
             <td>{expense.category}</td>
             <td>
