@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Alert from "./components/Alert";
 import Button from "./components/Button";
 import ListGroup from "./components/ListGroup";
@@ -197,8 +197,29 @@ function App() {
   };
   // p1.6.10 - END
 
+  // p1.7.2 understanding effect hook - start
+  const ref = useRef<HTMLInputElement>(null);
+
+  // after render
+  // tiap function dalam useEffect akan dipanggil setelah render
+  // tidak bisa dipanggil dalam loop, atau statement
+  // useEffect bisa dipanggil berapa kali
+  useEffect(() => {
+    // Side Effect
+    if (ref.current) ref.current.focus();
+  });
+
+  useEffect(() => {
+    // mengganti <title>, tetapi jika dilihat dengan view page source. yang terlihat adalah title lama
+    document.title = "React App";
+  });
+
+  // p1.7.2 understanding effect hook - end
   return (
     <>
+      <div>
+        <input ref={ref} type="text" />
+      </div>
       {/* p1.6.10 - Project- Expense Tracker - START */}
       <div>
         <ExpenseForm
