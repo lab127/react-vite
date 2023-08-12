@@ -16,6 +16,9 @@ import ExpenseForm from "./expense-tracker/components/ExpenseForm";
 import ExpenseList from "./expense-tracker/components/ExpenseList";
 import ExpenseCategories from "./expense-tracker/components/ExpenseCategories";
 
+// cara export immutable variable
+export const CategoryList = ["News", "Food", "Entertainment"] as const;
+
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
 
