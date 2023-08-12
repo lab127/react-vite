@@ -20,6 +20,10 @@ import ProductList from "./components/ProductList";
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
 
+// p1.7.4 efffect clean up
+const connect = () => console.log("Connecting");
+const disconnect = () => console.log("Disconnecting");
+
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
 
@@ -220,6 +224,14 @@ function App() {
   // p1.7.3 effect dependencies - start
   const [productCategory, setProductCategory] = useState("");
   // p1.7.3 - end
+
+  // p1.7.4 efffect clean up - start
+  useEffect(() => {
+    connect();
+    // return: clean up connect() effect
+    return () => disconnect();
+  });
+  // p1.7.4 - end
   return (
     <>
       {/* p1.7.3 start */}
