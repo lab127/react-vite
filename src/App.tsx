@@ -160,6 +160,8 @@ function App() {
     { id: 4, description: "adddda", amount: 10, category: "Entertainment" },
   ];
 
+  const categories = ["Groceries", "Utilities", "Entertainment"];
+
   const [expenseItem, setExpenseItem] = useState(expenseArr);
 
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -171,14 +173,35 @@ function App() {
   const delExpenseItem = (itemId: number) => {
     setExpenseItem(expenseItem.filter((item) => item.id !== itemId));
   };
+
+  const addExpense = (data: { description: string; amount: number }) => {
+    // if (selectedCategory !== "") {
+    setExpenseItem([
+      ...expenseItem,
+      {
+        id: expenseItem[expenseItem.length - 1].id + 1,
+        description: data.description,
+        amount: data.amount,
+        category: selectedCategory,
+      },
+    ]);
+    // }
+  };
   // p1.6.10 - END
 
   return (
     <>
       {/* p1.6.10 - Project- Expense Tracker - START */}
       <div>
-        <ExpenseForm />
+        <ExpenseForm
+          onExpenseHandle={(data) =>
+            selectedCategory !== ""
+              ? addExpense(data)
+              : console.log("Category required")
+          }
+        />
         <ExpenseCategories
+          categories={categories}
           onSelectCategory={(category) => setSelectedCategory(category)}
         />
         <ExpenseList expenses={expenseVisibility} onDelete={delExpenseItem} />

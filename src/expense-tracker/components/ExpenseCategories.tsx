@@ -1,8 +1,12 @@
 interface CategoriesProps {
+  categories: string[];
   onSelectCategory: (category: string) => void;
 }
 
-const ExpenseCategories = ({ onSelectCategory }: CategoriesProps) => {
+const ExpenseCategories = ({
+  categories,
+  onSelectCategory,
+}: CategoriesProps) => {
   return (
     <select
       name="category"
@@ -11,9 +15,11 @@ const ExpenseCategories = ({ onSelectCategory }: CategoriesProps) => {
       onChange={(event) => onSelectCategory(event.target.value)}
     >
       <option value="">- Categories -</option>
-      <option value="Groceries">Groceries</option>
-      <option value="Utilities">Utilities</option>
-      <option value="Entertainment">Entertainment</option>
+      {categories.map((category, index) => (
+        <option key={index} value={category}>
+          {category}
+        </option>
+      ))}
     </select>
   );
 };

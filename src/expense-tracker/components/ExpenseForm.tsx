@@ -1,13 +1,11 @@
-import { FormEvent, useRef, useState } from "react";
-import { FieldValues, useForm } from "react-hook-form";
-import { ZodSchema, z } from "zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const expenseSchema = z.object({
-  // id: z.number(),
   description: z
     .string()
-    .min(1, { message: "Description must be at least 3 characters." }),
+    .min(3, { message: "Description must be at least 3 characters." }),
   amount: z
     .number({ invalid_type_error: "Amount field is required." })
     .min(1, { message: "Amount must be at least 1." }),
@@ -15,17 +13,20 @@ const expenseSchema = z.object({
 
 type ExpenseFormData = z.infer<typeof expenseSchema>;
 
-const onExpenseSubmit = (data: FieldValues) => console.log(data);
+// const onExpenseSubmit = (data: FieldValues) => console.log(data);
 
-const ExpenseForm = () => {
+interface ExpenseFormProps {
+  onExpenseHandle: (data: ExpenseFormData) => void;
+}
+
+const ExpenseForm = ({ onExpenseHandle }: ExpenseFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ExpenseFormData>({ resolver: zodResolver(expenseSchema) });
-
   return (
-    <form className="mb-3" onSubmit={handleSubmit(onExpenseSubmit)}>
+    <form className="mb-3" onSubmit={handleSubmit(onExpenseHandle)}>
       <div className="mb-3">
         <label htmlFor="description" className="form-label">
           Description
@@ -36,7 +37,9 @@ const ExpenseForm = () => {
           id="description"
           className="form-control"
         />
-        <p className="text-danger">{errors.description?.message}</p>
+        {errors.description && (
+          <p className="text-danger">{errors.description.message}</p>
+        )}
       </div>
       <div className="mb-3">
         <label htmlFor="amount" className="form-label">
