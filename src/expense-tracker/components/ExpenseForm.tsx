@@ -26,12 +26,21 @@ const ExpenseForm = ({ onExpenseHandle }: ExpenseFormProps) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ExpenseFormData>({ resolver: zodResolver(expenseSchema) });
   return (
     <>
       <div className="mb-3">{CategoryList}</div>
-      <form className="mb-3" onSubmit={handleSubmit(onExpenseHandle)}>
+      <form
+        className="mb-3"
+        onSubmit={handleSubmit((data) => {
+          onExpenseHandle(data);
+          // reset value setelah klik add expense jadi clear
+          // problem: kalau banyak <input> harus ngetik ulang jika ada yang required
+          reset();
+        })}
+      >
         <div className="mb-3">
           <label htmlFor="description" className="form-label">
             Description
