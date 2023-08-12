@@ -174,18 +174,23 @@ function App() {
     setExpenseItem(expenseItem.filter((item) => item.id !== itemId));
   };
 
+  const [cateMsg, setCateMsg] = useState("");
+
   const addExpense = (data: { description: string; amount: number }) => {
-    // if (selectedCategory !== "") {
-    setExpenseItem([
-      ...expenseItem,
-      {
-        id: expenseItem[expenseItem.length - 1].id + 1,
-        description: data.description,
-        amount: data.amount,
-        category: selectedCategory,
-      },
-    ]);
-    // }
+    if (selectedCategory !== "") {
+      setExpenseItem([
+        ...expenseItem,
+        {
+          id: expenseItem[expenseItem.length - 1].id + 1,
+          description: data.description,
+          amount: data.amount,
+          category: selectedCategory,
+        },
+      ]);
+      setCateMsg("");
+    } else {
+      setCateMsg("Category is required.");
+    }
   };
   // p1.6.10 - END
 
@@ -194,16 +199,18 @@ function App() {
       {/* p1.6.10 - Project- Expense Tracker - START */}
       <div>
         <ExpenseForm
-          onExpenseHandle={(data) =>
-            selectedCategory !== ""
-              ? addExpense(data)
-              : console.log("Category required")
+          onExpenseHandle={
+            (data) => addExpense(data)
+            // selectedCategory !== ""
+            //   ? addExpense(data)
+            //   : console.log("Category required")
           }
         />
         <ExpenseCategories
           categories={categories}
           onSelectCategory={(category) => setSelectedCategory(category)}
         />
+        <p className="text-danger">{cateMsg}</p>
         <ExpenseList expenses={expenseVisibility} onDelete={delExpenseItem} />
       </div>
       {/* p1.6.10 - END */}
