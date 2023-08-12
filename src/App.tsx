@@ -15,6 +15,7 @@ import "./index.css";
 import ExpenseForm from "./expense-tracker/components/ExpenseForm";
 import ExpenseList from "./expense-tracker/components/ExpenseList";
 import ExpenseCategories from "./expense-tracker/components/ExpenseCategories";
+import ProductList from "./components/ProductList";
 
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
@@ -215,11 +216,26 @@ function App() {
   });
 
   // p1.7.2 understanding effect hook - end
+
+  // p1.7.3 effect dependencies - start
+  const [productCategory, setProductCategory] = useState("");
+  // p1.7.3 - end
   return (
     <>
+      {/* p1.7.3 start */}
+      <select
+        onChange={(event) => setProductCategory(event.target.value)}
+        className="form-select"
+      >
+        <option value=""></option>
+        <option value="Clothing">Clothing</option>
+        <option value="Household">Household</option>
+      </select>
+      <ProductList category={productCategory} />
       <div>
         <input ref={ref} type="text" />
       </div>
+      {/* p1.7.3 end */}
       {/* p1.6.10 - Project- Expense Tracker - START */}
       <div>
         <ExpenseForm
