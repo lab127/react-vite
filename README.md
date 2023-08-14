@@ -53,3 +53,9 @@ Integrate react hook form + zod
 ```bash
 npm install @hookform/resolvers@2.9.11
 ```
+
+Install Axios
+
+```bash
+npm install axios@1.3.4
+```

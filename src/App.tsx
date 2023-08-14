@@ -16,13 +16,23 @@ import ExpenseForm from "./expense-tracker/components/ExpenseForm";
 import ExpenseList from "./expense-tracker/components/ExpenseList";
 import ExpenseCategories from "./expense-tracker/components/ExpenseCategories";
 import ProductList from "./components/ProductList";
+import axios from "axios";
 
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
 
-// p1.7.4 efffect clean up
+// p1.7.4 efffect clean up - START
 const connect = () => console.log("Connecting");
 const disconnect = () => console.log("Disconnecting");
+// p1.7.4 - END
+
+// p1.7.4 - Fetching Data - START
+// langsung tambahkan setelah axios.get<UserResType[]>
+interface UserResType {
+  id: number;
+  name: string;
+}
+// p1.7.5 - END
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -232,8 +242,33 @@ function App() {
     return () => disconnect();
   });
   // p1.7.4 - end
+
+  // p1.7.5- Fetching Data- start
+  // tambahkan <UserResType[]> untuk definiskan data type useState() agar bisa dipanggil di useEffect()
+  const [userJson, setUserJson] = useState<UserResType[]>([]);
+
+  useEffect(() => {
+    // proses `get` dari server tidak akan terjadi secara langsung dan ada jeda.
+    // `get` method return promise
+    // promise adalah return `get` baik sukses atau gagal dari asynchronous operation
+    // asynchronous: term digunakan jika proses lama
+    axios
+      .get<UserResType[]>("https://jsonplaceholder.typicode.com/users")
+      // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
+      .then((res) => setUserJson(res.data));
+    // tambahkan empty array `[]` setelah arrow function agar tidak terjadi infinite loop
+  }, []);
+  // p1.7.5- End
+
   return (
     <>
+      {/* p1.7.5- Fetching Data- start */}
+      <ul>
+        {userJson.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+      {/* p1.7.5- END */}
       {/* p1.7.3 start */}
       <select
         onChange={(event) => setProductCategory(event.target.value)}
