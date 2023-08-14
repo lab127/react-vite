@@ -243,21 +243,27 @@ function App() {
   });
   // p1.7.4 - end
 
-  // p1.7.5-7 - START
+  // p1.7.5, 7, 9 - START
   // p1.7.5 Fetching Data
   // tambahkan <UserResType[]> untuk definiskan data type useState() agar bisa dipanggil di useEffect()
   const [userJson, setUserJson] = useState<UserResType[]>([]);
   // init buat menjunjukan error di html
   const [userError, setUserError] = useState("");
 
+  // p.1.7.9 - canceling a fetch requeest
+  // saat fetch data menggunkan useEffect, perlu clean-up function(dikonek), jika data sudah tidak diperlukan lagi
   useEffect(() => {
+    // controller buat cancel digunakan untuk arg ke-2 axios.get sebagai axios config
+    const controller = new AbortController();
     // proses `get` dari server tidak akan terjadi secara langsung dan ada jeda.
     // `get` method return promise, di sini `.then` adalah promise
     // promise adalah return `get` baik sukses atau gagal dari asynchronous operation
     // asynchronous: term digunakan jika proses lama
 
     axios
-      .get<UserResType[]>("https://jsonplaceholder.typicode.com/usersx")
+      .get<UserResType[]>("https://jsonplaceholder.typicode.com/users", {
+        signal: controller.signal,
+      })
       // `.then()` adalah promise dengan return callback function
       // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
       .then((res) => setUserJson(res.data))
@@ -268,10 +274,16 @@ function App() {
       // contoh: https://jsonplaceholder.typicode.com/users-error
       // err.message nggak perlu interface
       // err adalah object jadi ada beberapa properti, salah satunya adalah `name`
-      .catch((err) => setUserError(err.message + ": " + err.name));
+      .catch((err) => {
+        // entah kenapa: if (err instanceof CanceledError) return; jadi Cannot find name 'CanceledError'.ts
+        // jadi gini aja biar nggak mumet
+        if (err.name === "CanceledError") return;
+        setUserError(err.message + "-- " + err.name);
+      });
+    return () => controller.abort();
     // tambahkan empty array `[]` setelah arrow function agar tidak terjadi infinite loop
   }, []);
-  // p1.7.5-7 - End
+  // p1.7.5, 7 - End
 
   // p1.7.8 - Cara lain fetch data dengan `async` dan `await` keyword
   useEffect(() => {
@@ -280,7 +292,7 @@ function App() {
       try {
         // buat variable untuk return value, digunakan oleh useState
         const res = await axios.get<UserResType[]>(
-          "https://jsonplaceholder.typicode.com/usersx"
+          "https://jsonplaceholder.typicode.com/users"
         );
         setUserJson(res.data);
       } catch (error) {
@@ -298,7 +310,7 @@ function App() {
     <>
       {/* p1.7.5- Fetching Data- start */}
       <ul>
-        <p className="text-danger">{userError}</p>
+        {userError && <p className="text-danger">{userError}</p>}
         {userJson.map((user) => (
           <li key={user.id}>{user.name}</li>
         ))}
