@@ -243,27 +243,40 @@ function App() {
   });
   // p1.7.4 - end
 
-  // p1.7.5- Fetching Data- start
+  // p1.7.5-7 - START
+  // p1.7.5 Fetching Data
   // tambahkan <UserResType[]> untuk definiskan data type useState() agar bisa dipanggil di useEffect()
   const [userJson, setUserJson] = useState<UserResType[]>([]);
+  // init buat menjunjukan error di html
+  const [userError, setUserError] = useState("");
 
   useEffect(() => {
     // proses `get` dari server tidak akan terjadi secara langsung dan ada jeda.
-    // `get` method return promise
+    // `get` method return promise, di sini `.then` adalah promise
     // promise adalah return `get` baik sukses atau gagal dari asynchronous operation
     // asynchronous: term digunakan jika proses lama
+
     axios
-      .get<UserResType[]>("https://jsonplaceholder.typicode.com/users")
+      .get<UserResType[]>("https://jsonplaceholder.typicode.com/usersx")
+      // `.then()` adalah promise dengan return callback function
       // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
-      .then((res) => setUserJson(res.data));
+      .then((res) => setUserJson(res.data))
+      // p1.7.7 Handling Errors
+      // di javascript tiap promise mempunyai method `catch` yang bisa digunakan untuk menunjukan kegagalan saat menjalankan promise.
+      // Dalam hal ini, menunjukan jika fetch dari `axios.get` dengan promise `.then` gagal
+      // pengecekan error bisa praktekan dengan mengubah url endpoint invalid
+      // contoh: https://jsonplaceholder.typicode.com/users-error
+      // err.message nggak perlu interface
+      .catch((err) => setUserError(err.message));
     // tambahkan empty array `[]` setelah arrow function agar tidak terjadi infinite loop
   }, []);
-  // p1.7.5- End
+  // p1.7.5-7 - End
 
   return (
     <>
       {/* p1.7.5- Fetching Data- start */}
       <ul>
+        <p className="text-danger">{userError}</p>
         {userJson.map((user) => (
           <li key={user.id}>{user.name}</li>
         ))}
