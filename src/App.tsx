@@ -219,10 +219,9 @@ function App() {
   // tiap function dalam useEffect akan dipanggil setelah render
   // tidak bisa dipanggil dalam loop, atau statement
   // useEffect bisa dipanggil berapa kali
-  useEffect(() => {
-    // Side Effect
-    if (ref.current) ref.current.focus();
-  });
+  // useEffect(() => {
+  //   if (ref.current) ref.current.focus();
+  // });
 
   useEffect(() => {
     // mengganti <title>, tetapi jika dilihat dengan view page source. yang terlihat adalah title lama
@@ -317,15 +316,40 @@ function App() {
     // jangan lupa empty array
   }, []);
   // p1.7.8 - end
+
+  // p1.7.11 Deleting Data
+  const onDeleteUser = (user: UserResType) => {
+    const originalUsers = [...userJson];
+    setUserJson(userJson.filter((u) => u.id !== user.id));
+    axios
+      .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
+      .catch((err) => {
+        setUserError(err.message);
+      });
+    setUserJson(originalUsers);
+  };
+  // p1.7.11 End
   return (
     <>
       {/* p1.7.10 showing loading indicator */}
       {isLoading && <div className="spinner-border" role="status"></div>}
       {/* p1.7.5- Fetching Data- start */}
-      <ul>
-        {userError && <p className="text-danger">{userError}</p>}
+      {userError && <p className="text-danger">{userError}</p>}
+      <ul className="list-group mb-3">
         {userJson.map((user) => (
-          <li key={user.id}>{user.name}</li>
+          <li
+            key={user.id}
+            className="list-group-item d-flex justify-content-between"
+          >
+            {/* p1.7.11 */}
+            {user.name}
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => onDeleteUser(user)}
+            >
+              Delete
+            </button>
+          </li>
         ))}
       </ul>
       {/* p1.7.5- END */}
