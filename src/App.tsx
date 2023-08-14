@@ -16,7 +16,7 @@ import ExpenseForm from "./expense-tracker/components/ExpenseForm";
 import ExpenseList from "./expense-tracker/components/ExpenseList";
 import ExpenseCategories from "./expense-tracker/components/ExpenseCategories";
 import ProductList from "./components/ProductList";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
@@ -267,11 +267,33 @@ function App() {
       // pengecekan error bisa praktekan dengan mengubah url endpoint invalid
       // contoh: https://jsonplaceholder.typicode.com/users-error
       // err.message nggak perlu interface
-      .catch((err) => setUserError(err.message));
+      // err adalah object jadi ada beberapa properti, salah satunya adalah `name`
+      .catch((err) => setUserError(err.message + ": " + err.name));
     // tambahkan empty array `[]` setelah arrow function agar tidak terjadi infinite loop
   }, []);
   // p1.7.5-7 - End
 
+  // p1.7.8 - Cara lain fetch data dengan `async` dan `await` keyword
+  useEffect(() => {
+    const fetchUsers = async () => {
+      // gunakan try catch sebagai ganti dari `.catch` promise error`
+      try {
+        // buat variable untuk return value, digunakan oleh useState
+        const res = await axios.get<UserResType[]>(
+          "https://jsonplaceholder.typicode.com/usersx"
+        );
+        setUserJson(res.data);
+      } catch (error) {
+        // untuk mengetahui AxiosError, error dari axios.get adalah object. Maka bisa dilihat dengan error.name
+        // type anotation tidak bisa digunakan di `catch` try/catch, maka gunakan `as` keyword seperti dibawah
+        setUserError((error as AxiosError).message);
+      }
+    };
+    // panggil function fetchUsers
+    fetchUsers();
+    // jangan lupa empty array
+  }, []);
+  // p1.7.8 - end
   return (
     <>
       {/* p1.7.5- Fetching Data- start */}
