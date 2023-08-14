@@ -243,12 +243,14 @@ function App() {
   });
   // p1.7.4 - end
 
-  // p1.7.5, 7, 9 - START
+  // p1.7.5, 7, 9, 10 - START
   // p1.7.5 Fetching Data
   // tambahkan <UserResType[]> untuk definiskan data type useState() agar bisa dipanggil di useEffect()
   const [userJson, setUserJson] = useState<UserResType[]>([]);
   // init buat menjunjukan error di html
   const [userError, setUserError] = useState("");
+  // p1.7.10 Show loading indicator while fetching data
+  const [isLoading, setLoading] = useState(false);
 
   // p.1.7.9 - canceling a fetch requeest
   // saat fetch data menggunkan useEffect, perlu clean-up function(dikonek), jika data sudah tidak diperlukan lagi
@@ -260,13 +262,19 @@ function App() {
     // promise adalah return `get` baik sukses atau gagal dari asynchronous operation
     // asynchronous: term digunakan jika proses lama
 
+    // p1.7.10 panggil loading sebelum fetch ke server
+    setLoading(true);
     axios
       .get<UserResType[]>("https://jsonplaceholder.typicode.com/users", {
         signal: controller.signal,
       })
       // `.then()` adalah promise dengan return callback function
       // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
-      .then((res) => setUserJson(res.data))
+      .then((res) => {
+        setUserJson(res.data);
+        // p1.7.10 sembunyikan loader saat fetch data sukses
+        setLoading(false);
+      })
       // p1.7.7 Handling Errors
       // di javascript tiap promise mempunyai method `catch` yang bisa digunakan untuk menunjukan kegagalan saat menjalankan promise.
       // Dalam hal ini, menunjukan jika fetch dari `axios.get` dengan promise `.then` gagal
@@ -279,6 +287,9 @@ function App() {
         // jadi gini aja biar nggak mumet
         if (err.name === "CanceledError") return;
         setUserError(err.message + "-- " + err.name);
+        // p1.7.10 sembunyikan loader jika error
+        setLoading(false);
+        // p1.7.10 - END
       });
     return () => controller.abort();
     // tambahkan empty array `[]` setelah arrow function agar tidak terjadi infinite loop
@@ -308,6 +319,8 @@ function App() {
   // p1.7.8 - end
   return (
     <>
+      {/* p1.7.10 showing loading indicator */}
+      {isLoading && <div className="spinner-border" role="status"></div>}
       {/* p1.7.5- Fetching Data- start */}
       <ul>
         {userError && <p className="text-danger">{userError}</p>}
