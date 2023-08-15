@@ -325,8 +325,9 @@ function App() {
       .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
       .catch((err) => {
         setUserError(err.message);
+        // jika error userJson kembali ke data aslinya
+        setUserJson(originalUsers);
       });
-    setUserJson(originalUsers);
   };
   // p1.7.11 End
   return (
