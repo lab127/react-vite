@@ -345,6 +345,27 @@ function App() {
       });
   };
   // p1.7.12 - End
+  // p1.7.13 - Updating Data - start
+  const onUpdateUser = (user: UserResType) => {
+    const originalUsers = [...userJson];
+    const updatedUser = { ...user, name: user.name + " updated!" };
+    setUserJson(
+      userJson.map((usr) => (usr.id === user.id ? updatedUser : usr))
+    );
+
+    // axios.put untuk 1 object
+    // axios.patch untuk 1+ object property
+    axios
+      .patch(
+        "https://jsonplaceholder.typicode.com/users/" + user.id,
+        updatedUser
+      )
+      .catch((err) => {
+        setUserError(err.message);
+        setUserJson(originalUsers);
+      });
+  };
+  // p1.7.13 - END
   return (
     <>
       {/* p1.7.12 Creating Data */}
@@ -362,14 +383,23 @@ function App() {
             key={user.id}
             className="list-group-item d-flex justify-content-between"
           >
-            {/* p1.7.11 */}
             {user.name}
-            <button
-              className="btn btn-outline-danger"
-              onClick={() => onDeleteUser(user)}
-            >
-              Delete
-            </button>
+            {/* p1.7.13 */}
+            <div>
+              <button
+                className="btn btn-outline-secondary mx-1"
+                onClick={() => onUpdateUser(user)}
+              >
+                Update
+              </button>
+              {/* p1.7.11 */}
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => onDeleteUser(user)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
