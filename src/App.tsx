@@ -330,8 +330,28 @@ function App() {
       });
   };
   // p1.7.11 End
+  // p1.7.12 Creating Data - Start
+  const addUser = () => {
+    const newUser = { id: 0, name: "Aris" };
+    const originalUsers = [...userJson];
+    // di useSate, posisi newUser bebas, bisa di awal atau ahir
+    setUserJson([newUser, ...userJson]);
+    axios
+      .post("https://jsonplaceholder.typicode.com/users", newUser)
+      .then(({ data: savedUser }) => setUserJson([savedUser, ...userJson]))
+      .catch((err) => {
+        setUserError(err.message);
+        setUserJson(originalUsers);
+      });
+  };
+  // p1.7.12 - End
   return (
     <>
+      {/* p1.7.12 Creating Data */}
+      <button className="btn btn-primary mb-3" onClick={addUser}>
+        Add User
+      </button>
+      {/* p1.7.12 - End */}
       {/* p1.7.10 showing loading indicator */}
       {isLoading && <div className="spinner-border" role="status"></div>}
       {/* p1.7.5- Fetching Data- start */}
