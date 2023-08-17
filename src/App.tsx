@@ -16,7 +16,9 @@ import ExpenseForm from "./expense-tracker/components/ExpenseForm";
 import ExpenseList from "./expense-tracker/components/ExpenseList";
 import ExpenseCategories from "./expense-tracker/components/ExpenseCategories";
 import ProductList from "./components/ProductList";
-import axios, { AxiosError } from "axios";
+// import axios from "axios";
+// pengganti import axios
+import apiClients, { AxiosError, CanceledError } from "./services/api-clients";
 
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
@@ -263,10 +265,13 @@ function App() {
 
     // p1.7.10 panggil loading sebelum fetch ke server
     setLoading(true);
-    axios
-      .get<UserResType[]>("https://jsonplaceholder.typicode.com/users", {
-        signal: controller.signal,
-      })
+    // p1.6.14 axios. ganti apiClient biar nggak redundant, karena base url udah ada di apiClient
+    apiClients
+      .get<UserResType[]>("/users", { signal: controller.signal })
+      // axios
+      //   .get<UserResType[]>("https://jsonplaceholder.typicode.com/users", {
+      //     signal: controller.signal,
+      //   })
       // `.then()` adalah promise dengan return callback function
       // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
       .then((res) => {
@@ -283,7 +288,9 @@ function App() {
       // err adalah object jadi ada beberapa properti, salah satunya adalah `name`
       .catch((err) => {
         // entah kenapa: if (err instanceof CanceledError) return; jadi Cannot find name 'CanceledError'.ts
-        // jadi gini aja biar nggak mumet
+        // ternyata CanceledError harus di import dari axios
+        // import {CanceledError} from "axios";
+        // alternative err.name === "CanceledError", karena hanya conditional
         if (err.name === "CanceledError") return;
         setUserError(err.message + "-- " + err.name);
         // p1.7.10 sembunyikan loader jika error
@@ -301,9 +308,11 @@ function App() {
       // gunakan try catch sebagai ganti dari `.catch` promise error`
       try {
         // buat variable untuk return value, digunakan oleh useState
-        const res = await axios.get<UserResType[]>(
-          "https://jsonplaceholder.typicode.com/users"
-        );
+        // const res = await axios.get<UserResType[]>(
+        //   "https://jsonplaceholder.typicode.com/users"
+        // );
+        // p1.6.14 axios. ganti dengan apiClients.
+        const res = await apiClients.get<UserResType[]>("/users");
         setUserJson(res.data);
       } catch (error) {
         // untuk mengetahui AxiosError, error dari axios.get adalah object. Maka bisa dilihat dengan error.name
@@ -321,13 +330,19 @@ function App() {
   const onDeleteUser = (user: UserResType) => {
     const originalUsers = [...userJson];
     setUserJson(userJson.filter((u) => u.id !== user.id));
-    axios
-      .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
-      .catch((err) => {
-        setUserError(err.message);
-        // jika error userJson kembali ke data aslinya
-        setUserJson(originalUsers);
-      });
+    // p1.6.14 axios. ganti dengan apiClients.
+    // axios
+    //   .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
+    //   .catch((err) => {
+    //     setUserError(err.message);
+    //     // jika error userJson kembali ke data aslinya
+    //     setUserJson(originalUsers);
+    //   });
+    apiClients.delete("/users/" + user.id).catch((err) => {
+      setUserError(err.message);
+      // jika error userJson kembali ke data aslinya
+      setUserJson(originalUsers);
+    });
   };
   // p1.7.11 End
   // p1.7.12 Creating Data - Start
@@ -336,13 +351,21 @@ function App() {
     const originalUsers = [...userJson];
     // di useSate, posisi newUser bebas, bisa di awal atau ahir
     setUserJson([newUser, ...userJson]);
-    axios
-      .post("https://jsonplaceholder.typicode.com/users", newUser)
+    // p1.6.14 axios. ganti dengan apiClients.
+    apiClients
+      .post("/users", newUser)
       .then(({ data: savedUser }) => setUserJson([savedUser, ...userJson]))
       .catch((err) => {
         setUserError(err.message);
         setUserJson(originalUsers);
       });
+    // axios
+    //   .post("https://jsonplaceholder.typicode.com/users", newUser)
+    //   .then(({ data: savedUser }) => setUserJson([savedUser, ...userJson]))
+    //   .catch((err) => {
+    //     setUserError(err.message);
+    //     setUserJson(originalUsers);
+    //   });
   };
   // p1.7.12 - End
   // p1.7.13 - Updating Data - start
@@ -353,17 +376,22 @@ function App() {
       userJson.map((usr) => (usr.id === user.id ? updatedUser : usr))
     );
 
-    // axios.put untuk 1 object
-    // axios.patch untuk 1+ object property
-    axios
-      .patch(
-        "https://jsonplaceholder.typicode.com/users/" + user.id,
-        updatedUser
-      )
-      .catch((err) => {
-        setUserError(err.message);
-        setUserJson(originalUsers);
-      });
+    // p1.6.13 axios.put untuk 1 object
+    // p1.6.13 axios.patch untuk 1+ object property
+    // p1.6.14 axios. ganti dengan apiClients.
+    apiClients.patch("/users/" + user.id, updatedUser).catch((err) => {
+      setUserError(err.message);
+      setUserJson(originalUsers);
+    });
+    // axios
+    //   .patch(
+    //     "https://jsonplaceholder.typicode.com/users/" + user.id,
+    //     updatedUser
+    //   )
+    //   .catch((err) => {
+    //     setUserError(err.message);
+    //     setUserJson(originalUsers);
+    //   });
   };
   // p1.7.13 - END
   return (
