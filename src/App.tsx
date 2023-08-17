@@ -22,6 +22,7 @@ import ProductList from "./components/ProductList";
 // pengganti apiClients
 import { AxiosError, CanceledError } from "./services/api-clients";
 import userService, { UserResType } from "./services/user-service";
+import * as UserFn from "./services/user-service-fn";
 
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
@@ -270,7 +271,7 @@ function App() {
     setLoading(true);
     // p1.6.14 axios. ganti apiClient biar nggak redundant, karena base url udah ada di apiClient
     // p1.6.15 deconstruct userService
-    const { request, cancel } = userService.getAllUsers(); // p1.6.15 apiClint.get diganti dengan user-service.ts
+    const { request, cancel } = UserFn.getAllUsers(); // p1.6.15 apiClint.get diganti dengan user-service.ts
     // apiClients
     //   .get<UserResType[]>("/users", { signal: controller.signal })
     // axios
