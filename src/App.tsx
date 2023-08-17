@@ -322,7 +322,7 @@ function App() {
         // );
         // p1.6.14 axios. ganti dengan apiClients.
         // const res = await apiClients.get<UserResType[]>("/users");
-        const { request, cancel } = userService.getAllUsers();
+        const { request, cancel } = userService.getAll<UserResType>();
         const res = await request;
         setUserJson(res.data);
       } catch (error) {
@@ -349,7 +349,7 @@ function App() {
     //     // jika error userJson kembali ke data aslinya
     //     setUserJson(originalUsers);
     //   });
-    userService.deleteUser(user.id).catch((err) => {
+    userService.delete(user.id).catch((err) => {
       setUserError(err.message);
       setUserJson(originalUsers);
     });
@@ -370,7 +370,7 @@ function App() {
     // apiClients
     //   .post("/users", newUser)
     userService
-      .createUser(newUser)
+      .create(newUser)
       .then(({ data: savedUser }) => setUserJson([savedUser, ...userJson]))
       .catch((err) => {
         setUserError(err.message);
@@ -397,7 +397,7 @@ function App() {
     // p1.6.13 axios.patch untuk 1+ object property
     // p1.6.14 axios. ganti dengan apiClients.
     // apiClients.patch("/users/" + user.id, updatedUser)
-    userService.updateUser(updatedUser).catch((err) => {
+    userService.update(updatedUser).catch((err) => {
       setUserError(err.message);
       setUserJson(originalUsers);
     });
