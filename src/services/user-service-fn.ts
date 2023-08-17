@@ -1,4 +1,5 @@
 import apiClients from "./api-clients";
+// penulisan user-service.ts jika menggukan function method
 
 export interface UserResType {
   id: number;
