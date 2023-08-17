@@ -22,7 +22,8 @@ import ProductList from "./components/ProductList";
 // pengganti apiClients
 import { AxiosError, CanceledError } from "./services/api-clients";
 import userService, { UserResType } from "./services/user-service";
-import * as UserFn from "./services/user-service-fn";
+import useUsers from "./hooks/useUsers";
+// import * as UserFn from "./services/user-service-fn";
 
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
@@ -248,94 +249,10 @@ function App() {
   });
   // p1.7.4 - end
 
-  // p1.7.5, 7, 9, 10 - START
-  // p1.7.5 Fetching Data
-  // tambahkan <UserResType[]> untuk definiskan data type useState() agar bisa dipanggil di useEffect()
-  const [userJson, setUserJson] = useState<UserResType[]>([]);
-  // init buat menjunjukan error di html
-  const [userError, setUserError] = useState("");
-  // p1.7.10 Show loading indicator while fetching data
-  const [isLoading, setLoading] = useState(false);
-
-  // p.1.7.9 - canceling a fetch request
-  // saat fetch data menggunkan useEffect, perlu clean-up function(dikonek), jika data sudah tidak diperlukan lagi
-  useEffect(() => {
-    // controller buat cancel digunakan untuk arg ke-2 axios.get sebagai axios config
-    // const controller = new AbortController();
-    // proses `get` dari server tidak akan terjadi secara langsung dan ada jeda.
-    // `get` method return promise, di sini `.then` adalah promise
-    // promise adalah return `get` baik sukses atau gagal dari asynchronous operation
-    // asynchronous: term digunakan jika proses lama
-
-    // p1.7.10 panggil loading sebelum fetch ke server
-    setLoading(true);
-    // p1.6.14 axios. ganti apiClient biar nggak redundant, karena base url udah ada di apiClient
-    // p1.6.15 deconstruct userService
-    const { request, cancel } = UserFn.getAllUsers(); // p1.6.15 apiClint.get diganti dengan user-service.ts
-    // apiClients
-    //   .get<UserResType[]>("/users", { signal: controller.signal })
-    // axios
-    //   .get<UserResType[]>("https://jsonplaceholder.typicode.com/users", {
-    //     signal: controller.signal,
-    //   })
-    // `.then()` adalah promise dengan return callback function
-    // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
-    // p1.6.15 request hasil deconstuct userService.getAllUsers()
-    request
-      .then((res) => {
-        setUserJson(res.data);
-        // p1.7.10 sembunyikan loader saat fetch data sukses
-        setLoading(false);
-      })
-      // p1.7.7 Handling Errors
-      // di javascript tiap promise mempunyai method `catch` yang bisa digunakan untuk menunjukan kegagalan saat menjalankan promise.
-      // Dalam hal ini, menunjukan jika fetch dari `axios.get` dengan promise `.then` gagal
-      // pengecekan error bisa praktekan dengan mengubah url endpoint invalid
-      // contoh: https://jsonplaceholder.typicode.com/users-error
-      // err.message nggak perlu interface
-      // err adalah object jadi ada beberapa properti, salah satunya adalah `name`
-      .catch((err) => {
-        // entah kenapa: if (err instanceof CanceledError) return; jadi Cannot find name 'CanceledError'.ts
-        // ternyata CanceledError harus di import dari axios
-        // import {CanceledError} from "axios";
-        // alternative err.name === "CanceledError", karena hanya conditional
-        if (err.name === "CanceledError") return;
-        setUserError(err.message + "-- " + err.name);
-        // p1.7.10 sembunyikan loader jika error
-        setLoading(false);
-        // p1.7.10 - END
-      });
-    // p1.6.15
-    return () => cancel();
-    // tambahkan empty array `[]` setelah arrow function agar tidak terjadi infinite loop
-  }, []);
-  // p1.7.5, 7 - End
-
-  // p1.7.8 - Cara lain fetch data dengan `async` dan `await` keyword
-  useEffect(() => {
-    const fetchUsers = async () => {
-      // gunakan try catch sebagai ganti dari `.catch` promise error`
-      try {
-        // buat variable untuk return value, digunakan oleh useState
-        // const res = await axios.get<UserResType[]>(
-        //   "https://jsonplaceholder.typicode.com/users"
-        // );
-        // p1.6.14 axios. ganti dengan apiClients.
-        // const res = await apiClients.get<UserResType[]>("/users");
-        const { request, cancel } = userService.getAll<UserResType>();
-        const res = await request;
-        setUserJson(res.data);
-      } catch (error) {
-        // untuk mengetahui AxiosError, error dari axios.get adalah object. Maka bisa dilihat dengan error.name
-        // type anotation tidak bisa digunakan di `catch` try/catch, maka gunakan `as` keyword seperti dibawah
-        setUserError((error as AxiosError).message);
-      }
-    };
-    // panggil function fetchUsers
-    fetchUsers();
-    // jangan lupa empty array
-  }, []);
-  // p1.7.8 - end
+  // p1.7.17 custom hook
+  const { userJson, userError, isLoading, setUserJson, setUserError } =
+    useUsers();
+  // p1.7.17 end
 
   // p1.7.11 Deleting Data
   const onDeleteUser = (user: UserResType) => {
