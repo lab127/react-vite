@@ -18,7 +18,10 @@ import ExpenseCategories from "./expense-tracker/components/ExpenseCategories";
 import ProductList from "./components/ProductList";
 // import axios from "axios";
 // pengganti import axios
-import apiClients, { AxiosError, CanceledError } from "./services/api-clients";
+// import apiClients, { AxiosError, CanceledError } from "./services/api-clients";
+// pengganti apiClients
+import { AxiosError, CanceledError } from "./services/api-clients";
+import userService, { UserResType } from "./services/user-service";
 
 // cara export immutable variable
 export const CategoryList = ["News", "Food", "Entertainment"] as const;
@@ -30,10 +33,10 @@ const disconnect = () => console.log("Disconnecting");
 
 // p1.7.4 - Fetching Data - START
 // langsung tambahkan setelah axios.get<UserResType[]>
-interface UserResType {
-  id: number;
-  name: string;
-}
+// interface UserResType {
+//   id: number;
+//   name: string;
+// }
 // p1.7.5 - END
 
 function App() {
@@ -253,11 +256,11 @@ function App() {
   // p1.7.10 Show loading indicator while fetching data
   const [isLoading, setLoading] = useState(false);
 
-  // p.1.7.9 - canceling a fetch requeest
+  // p.1.7.9 - canceling a fetch request
   // saat fetch data menggunkan useEffect, perlu clean-up function(dikonek), jika data sudah tidak diperlukan lagi
   useEffect(() => {
     // controller buat cancel digunakan untuk arg ke-2 axios.get sebagai axios config
-    const controller = new AbortController();
+    // const controller = new AbortController();
     // proses `get` dari server tidak akan terjadi secara langsung dan ada jeda.
     // `get` method return promise, di sini `.then` adalah promise
     // promise adalah return `get` baik sukses atau gagal dari asynchronous operation
@@ -266,14 +269,18 @@ function App() {
     // p1.7.10 panggil loading sebelum fetch ke server
     setLoading(true);
     // p1.6.14 axios. ganti apiClient biar nggak redundant, karena base url udah ada di apiClient
-    apiClients
-      .get<UserResType[]>("/users", { signal: controller.signal })
-      // axios
-      //   .get<UserResType[]>("https://jsonplaceholder.typicode.com/users", {
-      //     signal: controller.signal,
-      //   })
-      // `.then()` adalah promise dengan return callback function
-      // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
+    // p1.6.15 deconstruct userService
+    const { request, cancel } = userService.getAllUsers(); // p1.6.15 apiClint.get diganti dengan user-service.ts
+    // apiClients
+    //   .get<UserResType[]>("/users", { signal: controller.signal })
+    // axios
+    //   .get<UserResType[]>("https://jsonplaceholder.typicode.com/users", {
+    //     signal: controller.signal,
+    //   })
+    // `.then()` adalah promise dengan return callback function
+    // `res.data[0].` tidak ada auto completion, maka perlu didefinisikan shape userJson object dengan interface dan tambahkan setelah `get` method `.get<UserResType[]>` dan `useState`
+    // p1.6.15 request hasil deconstuct userService.getAllUsers()
+    request
       .then((res) => {
         setUserJson(res.data);
         // p1.7.10 sembunyikan loader saat fetch data sukses
@@ -297,7 +304,8 @@ function App() {
         setLoading(false);
         // p1.7.10 - END
       });
-    return () => controller.abort();
+    // p1.6.15
+    return () => cancel();
     // tambahkan empty array `[]` setelah arrow function agar tidak terjadi infinite loop
   }, []);
   // p1.7.5, 7 - End
@@ -312,7 +320,9 @@ function App() {
         //   "https://jsonplaceholder.typicode.com/users"
         // );
         // p1.6.14 axios. ganti dengan apiClients.
-        const res = await apiClients.get<UserResType[]>("/users");
+        // const res = await apiClients.get<UserResType[]>("/users");
+        const { request, cancel } = userService.getAllUsers();
+        const res = await request;
         setUserJson(res.data);
       } catch (error) {
         // untuk mengetahui AxiosError, error dari axios.get adalah object. Maka bisa dilihat dengan error.name
@@ -338,11 +348,15 @@ function App() {
     //     // jika error userJson kembali ke data aslinya
     //     setUserJson(originalUsers);
     //   });
-    apiClients.delete("/users/" + user.id).catch((err) => {
+    userService.deleteUser(user.id).catch((err) => {
       setUserError(err.message);
-      // jika error userJson kembali ke data aslinya
       setUserJson(originalUsers);
     });
+    // apiClients.delete("/users/" + user.id).catch((err) => {
+    //   setUserError(err.message);
+    //   // jika error userJson kembali ke data aslinya
+    //   setUserJson(originalUsers);
+    // });
   };
   // p1.7.11 End
   // p1.7.12 Creating Data - Start
@@ -352,8 +366,10 @@ function App() {
     // di useSate, posisi newUser bebas, bisa di awal atau ahir
     setUserJson([newUser, ...userJson]);
     // p1.6.14 axios. ganti dengan apiClients.
-    apiClients
-      .post("/users", newUser)
+    // apiClients
+    //   .post("/users", newUser)
+    userService
+      .createUser(newUser)
       .then(({ data: savedUser }) => setUserJson([savedUser, ...userJson]))
       .catch((err) => {
         setUserError(err.message);
@@ -379,7 +395,8 @@ function App() {
     // p1.6.13 axios.put untuk 1 object
     // p1.6.13 axios.patch untuk 1+ object property
     // p1.6.14 axios. ganti dengan apiClients.
-    apiClients.patch("/users/" + user.id, updatedUser).catch((err) => {
+    // apiClients.patch("/users/" + user.id, updatedUser)
+    userService.updateUser(updatedUser).catch((err) => {
       setUserError(err.message);
       setUserJson(originalUsers);
     });
